@@ -84,13 +84,47 @@ export interface DemoObligation {
   deliverables: string[];
 }
 
+export interface TermMismatchDetails {
+  field: string;
+  document1: {
+    name: string;
+    value: string;
+    section: string;
+  };
+  document2: {
+    name: string;
+    value: string;
+    section: string;
+  };
+}
+
+export interface DeadlineDetails {
+  obligation: string;
+  dueDate: string;
+  daysRemaining: number;
+  prepared: boolean;
+  deliverables: string[];
+}
+
+export interface CovenantRiskDetails {
+  covenant: string;
+  currentValue: number;
+  threshold: number;
+  cushion: string;
+  cushionPercentage: string;
+  trend: string;
+  projectedNextQuarter: string;
+}
+
+export type IssueDetails = TermMismatchDetails | DeadlineDetails | CovenantRiskDetails;
+
 export interface DemoIssue {
   id: string;
   type: 'term-mismatch' | 'upcoming-deadline' | 'covenant-risk';
   severity: 'low' | 'medium' | 'high' | 'critical';
   title: string;
   detected: string;
-  details: any;
+  details: IssueDetails;
   whyItMatters: string;
   nextSteps: string[];
   whoToNotify: string[];
@@ -105,7 +139,9 @@ export interface AuditEvent {
   type: string;
   description: string;
   user: string;
-  details: any;
+  details: {
+    [key: string]: string | number | boolean | undefined;
+  };
 }
 
 export class DemoDataLoader {
@@ -134,7 +170,6 @@ export class DemoDataLoader {
     status: 'healthy' | 'warning' | 'critical';
     explanation: string;
   } {
-    const loan = this.getLoan();
     const issues = this.getIssues();
     const openIssues = issues.filter((i) => i.status === 'open');
     const highSeverityIssues = openIssues.filter(

@@ -1,7 +1,13 @@
-import { RiskAnalysis, RiskFactor, Covenant } from '../types';
+import { RiskAnalysis, RiskFactor, Covenant, ReportingObligation, VersionDifference } from '../types';
+
+export interface LoanRiskData {
+  covenants?: Covenant[];
+  reportingObligations?: ReportingObligation[];
+  differences?: VersionDifference[];
+}
 
 export class RiskAnalyzer {
-  analyze(loanData: any): RiskAnalysis {
+  analyze(loanData: LoanRiskData): RiskAnalysis {
     const riskFactors: RiskFactor[] = [];
     let totalRiskScore = 0;
     
@@ -81,12 +87,12 @@ export class RiskAnalyzer {
     return { factors, score: factors.length > 0 ? totalScore / factors.length : 0 };
   }
 
-  private analyzeReporting(obligations: any[]): { factors: RiskFactor[], score: number } {
+  private analyzeReporting(obligations: ReportingObligation[]): { factors: RiskFactor[], score: number } {
     const factors: RiskFactor[] = [];
     let totalScore = 0;
     
-    const overdue = obligations.filter((o: any) => o.status === 'overdue');
-    const dueSoon = obligations.filter((o: any) => o.status === 'due-soon');
+    const overdue = obligations.filter((o) => o.status === 'overdue');
+    const dueSoon = obligations.filter((o) => o.status === 'due-soon');
     
     if (overdue.length > 0) {
       factors.push({
@@ -111,12 +117,12 @@ export class RiskAnalyzer {
     return { factors, score: factors.length > 0 ? totalScore / factors.length : 0 };
   }
 
-  private analyzeInconsistencies(differences: any[]): { factors: RiskFactor[], score: number } {
+  private analyzeInconsistencies(differences: VersionDifference[]): { factors: RiskFactor[], score: number } {
     const factors: RiskFactor[] = [];
     let totalScore = 0;
     
-    const critical = differences.filter((d: any) => d.significance === 'critical');
-    const high = differences.filter((d: any) => d.significance === 'high');
+    const critical = differences.filter((d) => d.significance === 'critical');
+    const high = differences.filter((d) => d.significance === 'high');
     
     if (critical.length > 0) {
       factors.push({

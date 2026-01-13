@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { DocumentParser } from './services/DocumentParser';
 import { CovenantExtractor } from './services/CovenantExtractor';
 import { VersionComparator } from './services/VersionComparator';
-import { RiskAnalyzer } from './services/RiskAnalyzer';
+import { RiskAnalyzer, LoanRiskData } from './services/RiskAnalyzer';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -106,7 +106,7 @@ ipcMain.handle('compare-versions', async (event, doc1Path: string, doc2Path: str
   }
 });
 
-ipcMain.handle('analyze-risk', async (event, loanData: any) => {
+ipcMain.handle('analyze-risk', async (_event, loanData: LoanRiskData) => {
   try {
     const analyzer = new RiskAnalyzer();
     const riskAnalysis = analyzer.analyze(loanData);
@@ -116,7 +116,7 @@ ipcMain.handle('analyze-risk', async (event, loanData: any) => {
   }
 });
 
-ipcMain.handle('get-loan-health', async (event, loanId: string) => {
+ipcMain.handle('get-loan-health', async (_event, _loanId: string) => {
   try {
     // In a real app, this would fetch from a database
     // For prototype, return mock health data

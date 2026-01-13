@@ -94,6 +94,181 @@ That's it! You'll see a fully populated loan with:
 
 ---
 
+## 👩‍💻 Dev Quickstart
+
+### Getting Started
+```bash
+# 1. Clone and install
+git clone https://github.com/wildhash/loanops-copilot.git
+cd loanops-copilot
+npm ci
+
+# 2. Run lint (should exit 0)
+npm run lint
+
+# 3. Run tests (should exit 0)
+npm test
+
+# 4. Build the application (should exit 0)
+npm run build
+
+# 5. Start development
+npm run dev
+```
+
+### Development Workflow
+```bash
+# Lint your changes
+npm run lint              # Check for issues
+npm run lint:fix          # Auto-fix issues
+
+# Test your changes
+npm test                  # Run all tests once
+npm run test:watch        # Watch mode for TDD
+npm run test:coverage     # Generate coverage report
+
+# Build and package
+npm run build             # Compile TypeScript + Babel
+npm run package           # Create distributable (Win/Mac/Linux)
+```
+
+### Common Commands
+| Command | Description |
+|---------|-------------|
+| `npm ci` | Clean install dependencies (preferred for CI) |
+| `npm install` | Install dependencies (adds to package-lock.json) |
+| `npm run lint` | Check code style and TypeScript issues |
+| `npm test` | Run all tests (Vitest) |
+| `npm run build` | Compile TypeScript to dist/ |
+| `npm start` | Build and run Electron app |
+| `npm run dev` | Development mode with hot reload |
+
+### Testing Strategy
+* **74 unit tests** covering core business logic
+* **No GUI dependencies** - all tests run headless in CI
+* Test fixtures in `src/tests/fixtures/`
+* Uses Vitest with happy-dom for React components
+
+---
+
+## 📐 Risk Scoring Model
+
+### Overview
+LoanOps Copilot uses a multi-factor risk scoring algorithm to provide an overall risk assessment for syndicated loans. The model analyzes three key dimensions:
+
+1. **Covenant Compliance** - Financial and operational covenant status
+2. **Reporting Obligations** - Timeliness of required submissions
+3. **Document Consistency** - Changes and inconsistencies across document versions
+
+### How Risk Scores Are Calculated
+
+#### 1. Covenant Analysis
+Each covenant is evaluated based on its current status:
+
+| Status | Risk Score | Description |
+|--------|------------|-------------|
+| **Breached** | 90 | Covenant currently breached - immediate action required |
+| **At-Risk** | 70 | Approaching breach threshold - enhanced monitoring needed |
+| **High Risk Classification** | 50 | Covenant marked as high-risk based on business criticality |
+| **Compliant** | 0 | Covenant currently in compliance |
+
+**Example:** A loan with 1 breached covenant and 1 at-risk covenant receives:
+- Breach factor: 90 points
+- At-risk factor: 70 points
+- High-risk classification: 50 points (if marked high-risk)
+- Average: (90 + 70 + 50) / 3 = 70 points → **High Risk**
+
+#### 2. Reporting Obligations
+Reporting obligations are scored based on submission status:
+
+| Status | Risk Score | Description |
+|--------|------------|-------------|
+| **Overdue** | 75 | Report past due date - technical default possible |
+| **Due Soon** | 40 | Report due within threshold period - preparation needed |
+| **Submitted** | 0 | Report submitted on time |
+
+#### 3. Document Inconsistencies
+Document changes are evaluated by significance:
+
+| Significance | Risk Score | Description |
+|--------------|------------|-------------|
+| **Critical** | 85 | Material changes to loan terms (e.g., pricing, covenants) |
+| **High** | 65 | Significant changes requiring review (e.g., dates, amounts) |
+| **Medium** | 40 | Moderate changes for awareness |
+| **Low** | 15 | Minor formatting or clarification changes |
+
+### Overall Risk Determination
+
+The overall risk level is determined by the **average risk score** across all identified factors:
+
+| Overall Risk | Score Range | Meaning |
+|--------------|-------------|---------|
+| **🔴 Critical** | 80-100 | Multiple critical issues requiring immediate stakeholder action |
+| **🟠 High** | 60-79 | Significant issues requiring close monitoring and likely intervention |
+| **🟡 Medium** | 40-59 | Moderate issues requiring enhanced monitoring |
+| **🟢 Low** | 0-39 | Normal monitoring - no immediate concerns |
+
+### Risk Factor Aggregation
+
+The algorithm:
+1. Identifies all risk factors across the three dimensions
+2. Calculates individual scores for each factor
+3. Averages scores across all factors
+4. Maps the average to an overall risk level
+
+**Example Calculation:**
+```
+Risk Factors:
+- Covenant Breach: 90
+- At-Risk Covenant: 70  
+- High Risk Covenant: 50
+- Overdue Report: 75
+- Critical Document Change: 85
+
+Average Score: (90 + 70 + 50 + 75 + 85) / 5 = 74
+Overall Risk: HIGH (60-79 range)
+```
+
+### Extending the Risk Model
+
+To customize the risk scoring for your organization:
+
+1. **Adjust thresholds** in `src/services/RiskAnalyzer.ts`:
+   ```typescript
+   private determineOverallRisk(score: number): 'low' | 'medium' | 'high' | 'critical' {
+     if (score >= 80) return 'critical';  // Adjust this threshold
+     if (score >= 60) return 'high';      // Adjust this threshold
+     if (score >= 40) return 'medium';    // Adjust this threshold
+     return 'low';
+   }
+   ```
+
+2. **Modify scoring weights** in the analysis methods:
+   ```typescript
+   // In analyzeCovenants():
+   totalScore += 90;  // Adjust breach score
+   totalScore += 70;  // Adjust at-risk score
+   ```
+
+3. **Add new risk factors**:
+   - Create new analysis methods following the pattern in `RiskAnalyzer.ts`
+   - Return `{ factors: RiskFactor[], score: number }`
+   - Integrate into the main `analyze()` method
+
+4. **Customize recommendations**:
+   - Edit `generateRecommendations()` in `RiskAnalyzer.ts`
+   - Add business-specific guidance based on risk factors
+
+### Risk Model Validation
+
+All risk calculations are validated through comprehensive tests in `src/tests/RiskAnalyzer.test.ts`:
+- Deterministic scoring (same input = same output)
+- Edge cases (empty data, single factors, multiple factors)
+- Score boundaries (low/medium/high/critical thresholds)
+- Recommendation generation
+
+---
+
 ## 🧪 Testing & Quality
 
 ### Run Tests
@@ -116,11 +291,12 @@ npm run build           # Compile TypeScript and bundle
 npm run package         # Create distributable packages
 ```
 
-**Test Coverage:** 29 unit tests covering:
-* Issue detection rules (term mismatches, deadlines, covenant risks)
-* Demo data loading
-* Health score calculation
-* Rule engine logic
+**Test Coverage:** 74 unit tests covering:
+* **Risk Analysis** - Deterministic scoring, covenant/reporting/document analysis (16 tests)
+* **Demo Data Validation** - Schema validation for all data types (14 tests)
+* **IPC Contracts** - Renderer ↔ Main process communication validation (15 tests)
+* **Issue Detection** - Term mismatches, deadlines, covenant risks (11 tests)
+* **Data Loading** - Demo data loading and health scoring (18 tests)
 
 ---
 

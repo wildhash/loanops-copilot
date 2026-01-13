@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { LoanDocument, Covenant, RiskAnalysis, VersionDifference, LoanHealth, ReportingObligation } from './types';
+import { LoanDocument, Covenant, RiskAnalysis, VersionDifference, LoanHealth } from './types';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -38,7 +38,7 @@ const App: React.FC = () => {
       const files = await ipcRenderer.invoke('upload-document');
       
       if (files && files.length > 0) {
-        const newDocs: LoanDocument[] = files.map((file: any) => ({
+        const newDocs: LoanDocument[] = files.map((file: { name: string; path: string; size: number }) => ({
           id: `DOC-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           name: file.name,
           path: file.path,
