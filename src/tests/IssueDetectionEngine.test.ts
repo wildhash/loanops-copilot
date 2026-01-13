@@ -45,7 +45,10 @@ describe('IssueDetectionEngine', () => {
       
       const firstIssue = dueSoonIssues[0];
       expect(firstIssue.type).toBe('upcoming-deadline');
-      expect(firstIssue.details.daysRemaining).toBeLessThanOrEqual(7);
+      if (firstIssue.type === 'upcoming-deadline') {
+        const details = firstIssue.details as import('../demo/DemoDataLoader').DeadlineDetails;
+        expect(details.daysRemaining).toBeLessThanOrEqual(7);
+      }
     });
 
     it('should not flag submitted obligations', () => {
@@ -103,10 +106,11 @@ describe('IssueDetectionEngine', () => {
       const issues = IssueDetectionEngine.detectCovenantRisks(covenants, loan);
 
       const leverageIssue = issues.find((i) => i.title.includes('Leverage'));
-      if (leverageIssue) {
-        expect(leverageIssue.details.cushion).toBeDefined();
-        expect(leverageIssue.details.cushionPercentage).toBeDefined();
-        expect(parseFloat(leverageIssue.details.cushion)).toBeGreaterThanOrEqual(0);
+      if (leverageIssue && leverageIssue.type === 'covenant-risk') {
+        const details = leverageIssue.details as import('../demo/DemoDataLoader').CovenantRiskDetails;
+        expect(details.cushion).toBeDefined();
+        expect(details.cushionPercentage).toBeDefined();
+        expect(parseFloat(details.cushion)).toBeGreaterThanOrEqual(0);
       }
     });
 
