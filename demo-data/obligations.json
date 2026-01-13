@@ -1,0 +1,65 @@
+[
+  {
+    "id": "OBL-001",
+    "title": "Quarterly Compliance Certificate",
+    "description": "Submit compliance certificate with Q3 2024 financial covenant calculations",
+    "frequency": "Quarterly",
+    "dueDate": "2024-10-15",
+    "status": "due-soon",
+    "daysUntilDue": 7,
+    "recipient": "Administrative Agent (FirstBank Capital)",
+    "source": "Credit Agreement, Section 9.1",
+    "deliverables": [
+      "Compliance certificate signed by CFO",
+      "Financial covenant calculations with supporting schedules",
+      "Management discussion and analysis"
+    ]
+  },
+  {
+    "id": "OBL-002",
+    "title": "Monthly Borrowing Base Certificate",
+    "description": "Submit borrowing base certificate with accounts receivable aging",
+    "frequency": "Monthly",
+    "dueDate": "2024-10-15",
+    "status": "due-soon",
+    "daysUntilDue": 7,
+    "recipient": "Administrative Agent (FirstBank Capital)",
+    "source": "Credit Agreement Amendment, Section 9.4",
+    "deliverables": [
+      "Borrowing base certificate",
+      "Accounts receivable aging report"
+    ]
+  },
+  {
+    "id": "OBL-003",
+    "title": "Annual Audited Financial Statements",
+    "description": "Provide audited financial statements for fiscal year 2024",
+    "frequency": "Annual",
+    "dueDate": "2025-03-31",
+    "status": "upcoming",
+    "daysUntilDue": 165,
+    "recipient": "All Lenders via Administrative Agent",
+    "source": "Credit Agreement, Section 4.1(a)",
+    "deliverables": [
+      "Audited financial statements",
+      "Auditor opinion letter",
+      "Management representation letter"
+    ]
+  },
+  {
+    "id": "OBL-004",
+    "title": "Annual Budget and Projections",
+    "description": "Submit annual budget and financial projections for 2025",
+    "frequency": "Annual",
+    "dueDate": "2025-03-31",
+    "status": "upcoming",
+    "daysUntilDue": 165,
+    "recipient": "Administrative Agent (FirstBank Capital)",
+    "source": "Credit Agreement, Section 9.2",
+    "deliverables": [
+      "Annual operating budget for 2025",
+      "Financial projections (3-year outlook)",
+      "Key assumptions and sensitivities"
+    ]
+  }
+]

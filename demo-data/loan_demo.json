@@ -1,0 +1,72 @@
+{
+  "loanId": "LOAN-2024-001",
+  "loanName": "TechCorp Industries Syndicated Credit Facility",
+  "status": "at-risk",
+  "borrower": {
+    "name": "TechCorp Industries, Inc.",
+    "jurisdiction": "Delaware",
+    "industry": "Technology Manufacturing"
+  },
+  "facility": {
+    "type": "Revolving Credit Facility",
+    "amount": 50000000,
+    "currency": "USD",
+    "margin": 325,
+    "baseRate": "SOFR",
+    "maturityDate": "2028-12-31",
+    "originalDate": "2024-01-01",
+    "lastAmendment": "2024-06-01"
+  },
+  "agent": {
+    "name": "FirstBank Capital, LLC",
+    "role": "Administrative Agent"
+  },
+  "lenders": [
+    {
+      "name": "FirstBank Capital, LLC",
+      "commitment": 30000000
+    },
+    {
+      "name": "Regional Finance Partners, LP",
+      "commitment": 20000000
+    }
+  ],
+  "governingLaw": "New York",
+  "documents": [
+    {
+      "id": "DOC-001",
+      "name": "Credit_Agreement_2024-01-01.pdf",
+      "version": "1.0",
+      "date": "2024-01-01",
+      "type": "Credit Agreement"
+    },
+    {
+      "id": "DOC-002",
+      "name": "First_Amendment_2024-06-01.pdf",
+      "version": "2.0",
+      "date": "2024-06-01",
+      "type": "Amendment"
+    }
+  ],
+  "extractedTerms": {
+    "DOC-001": {
+      "margin": 250,
+      "maturityDate": "2028-12-31",
+      "amount": 50000000,
+      "leverageRatioMax": 3.50,
+      "dscRatioMin": 1.25
+    },
+    "DOC-002": {
+      "margin": 325,
+      "maturityDate": "2028-12-31",
+      "amount": 50000000,
+      "leverageRatioMax": 3.00,
+      "dscRatioMin": 1.35
+    }
+  },
+  "currentMetrics": {
+    "leverageRatio": 2.95,
+    "dscRatio": 1.40,
+    "currentRatio": 1.22
+  }
+}

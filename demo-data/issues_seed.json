@@ -1,0 +1,85 @@
+[
+  {
+    "id": "ISSUE-001",
+    "type": "term-mismatch",
+    "severity": "high",
+    "title": "Margin Rate Mismatch Detected",
+    "detected": "Inconsistency found between original Credit Agreement and First Amendment",
+    "details": {
+      "field": "Margin (bps over SOFR)",
+      "document1": {
+        "name": "Credit_Agreement_2024-01-01.pdf",
+        "value": "250 bps",
+        "section": "Interest Rate Definition"
+      },
+      "document2": {
+        "name": "First_Amendment_2024-06-01.pdf",
+        "value": "325 bps",
+        "section": "Amended Interest Rate"
+      }
+    },
+    "whyItMatters": "This 75 bps increase significantly impacts borrowing costs and monthly interest payments. Inconsistency could lead to incorrect billing or disputes.",
+    "nextSteps": [
+      "Verify amendment was properly executed and accepted by all parties",
+      "Update loan management system with current margin of 325 bps",
+      "Calculate retroactive interest adjustment if amendment had effective date prior to system update"
+    ],
+    "whoToNotify": ["Administrative Agent", "Borrower CFO", "Lender Credit Team"],
+    "status": "open",
+    "createdDate": "2024-10-01",
+    "priority": "high"
+  },
+  {
+    "id": "ISSUE-002",
+    "type": "upcoming-deadline",
+    "severity": "medium",
+    "title": "Compliance Certificate Due in 7 Days",
+    "detected": "Quarterly compliance certificate deadline approaching with insufficient preparation time",
+    "details": {
+      "obligation": "Quarterly Compliance Certificate Q3 2024",
+      "dueDate": "2024-10-15",
+      "daysRemaining": 7,
+      "prepared": false,
+      "lastSubmission": "2024-07-15"
+    },
+    "whyItMatters": "Late submission constitutes a technical default under Section 7.2 of the Credit Agreement and may trigger default interest rates.",
+    "nextSteps": [
+      "Contact Borrower CFO immediately to initiate preparation",
+      "Request preliminary covenant calculations by October 12",
+      "Schedule review call with Borrower on October 13",
+      "Prepare extension request letter as backup if needed"
+    ],
+    "whoToNotify": ["Borrower CFO", "Administrative Agent Operations", "Credit Officer"],
+    "status": "open",
+    "createdDate": "2024-10-08",
+    "priority": "high"
+  },
+  {
+    "id": "ISSUE-003",
+    "type": "covenant-risk",
+    "severity": "medium",
+    "title": "Leverage Ratio Approaching Covenant Limit",
+    "detected": "Current leverage ratio is 2.95x, approaching maximum covenant of 3.00x with upward trend",
+    "details": {
+      "covenant": "Maximum Leverage Ratio",
+      "currentValue": 2.95,
+      "threshold": 3.00,
+      "cushion": 0.05,
+      "cushionPercentage": "1.7%",
+      "trend": "increasing",
+      "projectedNextQuarter": 2.98
+    },
+    "whyItMatters": "Breaching this covenant triggers an Event of Default, potentially allowing lenders to accelerate the loan and demand immediate repayment of $50M facility.",
+    "nextSteps": [
+      "Request updated financial projections from Borrower",
+      "Evaluate options: debt repayment, equity injection, or covenant amendment",
+      "Prepare amendment proposal if breach appears likely",
+      "Consider increasing monitoring frequency to monthly",
+      "Document all discussions and decisions in credit file"
+    ],
+    "whoToNotify": ["Credit Officer", "Risk Management", "Borrower CFO", "Lender Relationship Managers"],
+    "status": "open",
+    "createdDate": "2024-10-05",
+    "priority": "medium"
+  }
+]

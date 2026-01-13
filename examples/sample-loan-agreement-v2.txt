@@ -1,0 +1,186 @@
+SYNDICATED LOAN AGREEMENT - FIRST AMENDMENT
+
+This First Amendment to Loan Agreement ("Amendment") is entered into as of June 1, 2024, by and among:
+
+BORROWER: TechCorp Industries, Inc., a Delaware corporation
+LENDERS: FirstBank Capital, LLC and Regional Finance Partners, LP
+AGENT: FirstBank Capital, LLC, as Administrative Agent
+
+RECITALS:
+WHEREAS, the parties entered into that certain Syndicated Loan Agreement dated January 1, 2024; and
+WHEREAS, the parties desire to amend certain terms of the Agreement;
+
+NOW THEREFORE, the parties agree as follows:
+
+LOAN AMOUNT: $50,000,000 (Fifty Million Dollars) [UNCHANGED]
+INTEREST RATE: SOFR + 3.00% per annum [INCREASED FROM 2.50%]
+MATURITY DATE: December 31, 2028 [UNCHANGED]
+
+ARTICLE 1: DEFINITIONS AND TERMS
+
+1.1 Credit Facility: The Lenders agree to provide a revolving credit facility in the aggregate principal amount not to exceed $50,000,000.
+
+1.2 Use of Proceeds: The Borrower shall use the proceeds of the Loans solely for working capital and general corporate purposes.
+
+ARTICLE 2: CONDITIONS PRECEDENT
+
+2.1 Initial Funding: The obligation of each Lender to make the initial Loan is subject to receipt of executed loan documents and evidence of insurance coverage.
+
+ARTICLE 3: REPRESENTATIONS AND WARRANTIES
+
+3.1 Organization: The Borrower is duly organized, validly existing, and in good standing under the laws of Delaware.
+
+3.2 Financial Condition: The financial statements delivered to the Lenders fairly present the financial condition of the Borrower.
+
+3.3 No Material Adverse Change: There has been no material adverse change in the business, operations, or financial condition of the Borrower.
+
+ARTICLE 4: AFFIRMATIVE COVENANTS
+
+The Borrower covenants and agrees that, so long as any Loan remains outstanding:
+
+4.1 Financial Statements: The Borrower shall deliver to the Agent:
+    (a) Annual audited financial statements within 90 days of fiscal year end
+    (b) Quarterly unaudited financial statements within 30 days of quarter end [REDUCED FROM 45 DAYS]
+    (c) Monthly management reports within 20 days of month end [REDUCED FROM 30 DAYS]
+
+4.2 Compliance Certificate: Together with each delivery of financial statements, the Borrower shall provide a compliance certificate certifying compliance with all covenants.
+
+4.3 Insurance: The Borrower shall maintain insurance coverage on all properties and assets with reputable insurance companies in amounts and types customary for similar businesses.
+
+4.4 Existence: The Borrower shall preserve and maintain its corporate existence, rights, franchises, and privileges.
+
+4.5 Compliance with Laws: The Borrower shall comply in all material respects with all applicable federal, state, and local laws and regulations.
+
+4.6 Books and Records: The Borrower shall maintain proper books of record and account in accordance with GAAP.
+
+4.7 Environmental Compliance: The Borrower shall comply with all environmental laws and regulations and maintain all necessary environmental permits. [NEW COVENANT]
+
+ARTICLE 5: NEGATIVE COVENANTS
+
+The Borrower covenants and agrees that, so long as any Loan remains outstanding, without prior written consent of the Required Lenders:
+
+5.1 Indebtedness: The Borrower shall not create, incur, assume, or permit to exist any Indebtedness, except:
+    (a) Indebtedness under this Agreement
+    (b) Existing Indebtedness disclosed in Schedule 5.1
+    (c) Additional unsecured Indebtedness not to exceed $3,000,000 in the aggregate [REDUCED FROM $5,000,000]
+
+5.2 Liens: The Borrower shall not create, incur, assume, or permit to exist any Lien on any of its properties or assets, except for Permitted Liens as defined.
+
+5.3 Investments: The Borrower shall not make any Investment, except:
+    (a) Investments in cash equivalents
+    (b) Investments in wholly-owned subsidiaries not to exceed $1,500,000 annually [REDUCED FROM $2,000,000]
+
+5.4 Restricted Payments: The Borrower shall not declare or pay any dividend or make any distribution on account of its equity interests, except:
+    (a) Dividends payable solely in equity interests
+    (b) Cash dividends not to exceed $750,000 per fiscal year if no Default exists [REDUCED FROM $1,000,000]
+
+5.5 Asset Sales: The Borrower shall not sell, transfer, lease, or otherwise dispose of any assets except in the ordinary course of business.
+
+5.6 Fundamental Changes: The Borrower shall not merge, consolidate, liquidate, or dissolve, or permit any Subsidiary to do so.
+
+5.7 Capital Expenditures: The Borrower shall not make Capital Expenditures in excess of $8,000,000 in any fiscal year. [NEW COVENANT]
+
+ARTICLE 6: FINANCIAL COVENANTS
+
+The Borrower covenants and agrees to maintain, tested quarterly:
+
+6.1 Minimum Debt Service Coverage Ratio: The Borrower shall maintain a Debt Service Coverage Ratio of not less than 1.35 to 1.00, tested quarterly on a rolling four-quarter basis. [INCREASED FROM 1.25]
+
+    Debt Service Coverage Ratio = (EBITDA) / (Interest Expense + Principal Payments)
+
+6.2 Maximum Leverage Ratio: The Borrower shall not permit the Leverage Ratio to exceed 3.00 to 1.00, tested quarterly. [TIGHTENED FROM 3.50]
+
+    Leverage Ratio = (Total Funded Debt) / (EBITDA for the trailing four fiscal quarters)
+
+6.3 Minimum Current Ratio: The Borrower shall maintain a Current Ratio of not less than 1.20 to 1.00, tested quarterly. [INCREASED FROM 1.10]
+
+    Current Ratio = (Current Assets) / (Current Liabilities)
+
+6.4 Minimum EBITDA: The Borrower shall maintain minimum EBITDA of not less than $12,000,000 for any trailing four fiscal quarter period. [INCREASED FROM $10,000,000]
+
+6.5 Maximum Total Leverage: The Borrower shall not permit Total Leverage to exceed 4.00 to 1.00 at any time. [NEW COVENANT]
+
+ARTICLE 7: EVENTS OF DEFAULT
+
+7.1 Payment Default: Failure to pay principal when due, or failure to pay interest or fees within five days of when due.
+
+7.2 Covenant Default: Failure to comply with any covenant in Articles 4, 5, or 6, and such failure continues for 15 days after written notice. [REDUCED FROM 30 DAYS]
+
+7.3 Representation Default: Any representation or warranty proves to be materially incorrect when made.
+
+7.4 Cross-Default: Default under any other Indebtedness exceeding $500,000. [REDUCED FROM $1,000,000]
+
+7.5 Bankruptcy: The Borrower becomes subject to any bankruptcy or insolvency proceeding.
+
+7.6 Material Adverse Change: Any material adverse change in the business, operations, properties, or financial condition of the Borrower.
+
+7.7 Change of Control: Any change in the ownership or control of the Borrower. [NEW EVENT OF DEFAULT]
+
+ARTICLE 8: REMEDIES
+
+Upon occurrence of an Event of Default, the Lenders may:
+- Declare all outstanding Loans immediately due and payable
+- Terminate all commitments to extend further credit
+- Exercise any and all rights and remedies available at law or in equity
+- Increase the interest rate by 2.00% per annum (Default Rate) [NEW REMEDY]
+
+ARTICLE 9: REPORTING OBLIGATIONS
+
+9.1 Quarterly Reporting: Within 30 days of each fiscal quarter end, the Borrower shall provide: [REDUCED FROM 45 DAYS]
+    - Unaudited quarterly financial statements
+    - Compliance certificate with covenant calculations
+    - Management discussion and analysis
+    - Accounts receivable aging report [NEW REQUIREMENT]
+
+9.2 Annual Reporting: Within 90 days of fiscal year end, the Borrower shall provide:
+    - Audited annual financial statements
+    - Annual compliance certificate
+    - Annual budget and projections for upcoming year
+
+9.3 Prompt Notification: The Borrower shall promptly notify the Agent of:
+    - Any Event of Default or potential Default
+    - Any litigation or governmental proceeding exceeding $250,000 [REDUCED FROM $500,000]
+    - Any material adverse change in business or operations
+
+9.4 Monthly Borrowing Base Certificate: By the 15th day of each month, the Borrower shall deliver a borrowing base certificate. [NEW REQUIREMENT]
+
+ARTICLE 10: FEES AND EXPENSES
+
+10.1 Commitment Fee: The Borrower shall pay a quarterly commitment fee of 0.50% per annum on the unused portion of the facility. [NEW FEE]
+
+10.2 Amendment Fee: The Borrower shall pay a one-time amendment fee of $50,000 to the Agent for distribution to the Lenders. [NEW FEE]
+
+ARTICLE 11: MISCELLANEOUS
+
+11.1 Governing Law: This Agreement shall be governed by the laws of the State of New York.
+
+11.2 Amendments: This Agreement may be amended only by written instrument signed by the Borrower and Required Lenders.
+
+11.3 Notices: All notices shall be in writing and delivered to the addresses specified.
+
+11.4 Ratification: Except as specifically amended hereby, all terms and conditions of the original Agreement remain in full force and effect.
+
+IN WITNESS WHEREOF, the parties have executed this Amendment as of the date first written above.
+
+BORROWER:
+TechCorp Industries, Inc.
+
+By: _______________________
+Name: John Smith
+Title: Chief Financial Officer
+
+AGENT:
+FirstBank Capital, LLC
+
+By: _______________________
+Name: Sarah Johnson  
+Title: Managing Director
+
+LENDERS:
+FirstBank Capital, LLC
+
+By: _______________________
+
+Regional Finance Partners, LP
+
+By: _______________________

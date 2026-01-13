@@ -1,0 +1,160 @@
+SYNDICATED LOAN AGREEMENT
+
+This Loan Agreement ("Agreement") is entered into as of January 1, 2024, by and among:
+
+BORROWER: TechCorp Industries, Inc., a Delaware corporation
+LENDERS: FirstBank Capital, LLC and Regional Finance Partners, LP
+AGENT: FirstBank Capital, LLC, as Administrative Agent
+
+LOAN AMOUNT: $50,000,000 (Fifty Million Dollars)
+INTEREST RATE: SOFR + 2.50% per annum
+MATURITY DATE: December 31, 2028
+
+ARTICLE 1: DEFINITIONS AND TERMS
+
+1.1 Credit Facility: The Lenders agree to provide a revolving credit facility in the aggregate principal amount not to exceed $50,000,000.
+
+1.2 Use of Proceeds: The Borrower shall use the proceeds of the Loans solely for working capital and general corporate purposes.
+
+ARTICLE 2: CONDITIONS PRECEDENT
+
+2.1 Initial Funding: The obligation of each Lender to make the initial Loan is subject to receipt of executed loan documents and evidence of insurance coverage.
+
+ARTICLE 3: REPRESENTATIONS AND WARRANTIES
+
+3.1 Organization: The Borrower is duly organized, validly existing, and in good standing under the laws of Delaware.
+
+3.2 Financial Condition: The financial statements delivered to the Lenders fairly present the financial condition of the Borrower.
+
+3.3 No Material Adverse Change: There has been no material adverse change in the business, operations, or financial condition of the Borrower.
+
+ARTICLE 4: AFFIRMATIVE COVENANTS
+
+The Borrower covenants and agrees that, so long as any Loan remains outstanding:
+
+4.1 Financial Statements: The Borrower shall deliver to the Agent:
+    (a) Annual audited financial statements within 90 days of fiscal year end
+    (b) Quarterly unaudited financial statements within 45 days of quarter end
+    (c) Monthly management reports within 30 days of month end
+
+4.2 Compliance Certificate: Together with each delivery of financial statements, the Borrower shall provide a compliance certificate certifying compliance with all covenants.
+
+4.3 Insurance: The Borrower shall maintain insurance coverage on all properties and assets with reputable insurance companies in amounts and types customary for similar businesses.
+
+4.4 Existence: The Borrower shall preserve and maintain its corporate existence, rights, franchises, and privileges.
+
+4.5 Compliance with Laws: The Borrower shall comply in all material respects with all applicable federal, state, and local laws and regulations.
+
+4.6 Books and Records: The Borrower shall maintain proper books of record and account in accordance with GAAP.
+
+ARTICLE 5: NEGATIVE COVENANTS
+
+The Borrower covenants and agrees that, so long as any Loan remains outstanding, without prior written consent of the Required Lenders:
+
+5.1 Indebtedness: The Borrower shall not create, incur, assume, or permit to exist any Indebtedness, except:
+    (a) Indebtedness under this Agreement
+    (b) Existing Indebtedness disclosed in Schedule 5.1
+    (c) Additional unsecured Indebtedness not to exceed $5,000,000 in the aggregate
+
+5.2 Liens: The Borrower shall not create, incur, assume, or permit to exist any Lien on any of its properties or assets, except for Permitted Liens as defined.
+
+5.3 Investments: The Borrower shall not make any Investment, except:
+    (a) Investments in cash equivalents
+    (b) Investments in wholly-owned subsidiaries not to exceed $2,000,000 annually
+
+5.4 Restricted Payments: The Borrower shall not declare or pay any dividend or make any distribution on account of its equity interests, except:
+    (a) Dividends payable solely in equity interests
+    (b) Cash dividends not to exceed $1,000,000 per fiscal year if no Default exists
+
+5.5 Asset Sales: The Borrower shall not sell, transfer, lease, or otherwise dispose of any assets except in the ordinary course of business.
+
+5.6 Fundamental Changes: The Borrower shall not merge, consolidate, liquidate, or dissolve, or permit any Subsidiary to do so.
+
+ARTICLE 6: FINANCIAL COVENANTS
+
+The Borrower covenants and agrees to maintain, tested quarterly:
+
+6.1 Minimum Debt Service Coverage Ratio: The Borrower shall maintain a Debt Service Coverage Ratio of not less than 1.25 to 1.00, tested quarterly on a rolling four-quarter basis.
+
+    Debt Service Coverage Ratio = (EBITDA) / (Interest Expense + Principal Payments)
+
+6.2 Maximum Leverage Ratio: The Borrower shall not permit the Leverage Ratio to exceed 3.50 to 1.00, tested quarterly.
+
+    Leverage Ratio = (Total Funded Debt) / (EBITDA for the trailing four fiscal quarters)
+
+6.3 Minimum Current Ratio: The Borrower shall maintain a Current Ratio of not less than 1.10 to 1.00, tested quarterly.
+
+    Current Ratio = (Current Assets) / (Current Liabilities)
+
+6.4 Minimum EBITDA: The Borrower shall maintain minimum EBITDA of not less than $10,000,000 for any trailing four fiscal quarter period.
+
+ARTICLE 7: EVENTS OF DEFAULT
+
+7.1 Payment Default: Failure to pay principal when due, or failure to pay interest or fees within five days of when due.
+
+7.2 Covenant Default: Failure to comply with any covenant in Articles 4, 5, or 6, and such failure continues for 30 days after written notice.
+
+7.3 Representation Default: Any representation or warranty proves to be materially incorrect when made.
+
+7.4 Cross-Default: Default under any other Indebtedness exceeding $1,000,000.
+
+7.5 Bankruptcy: The Borrower becomes subject to any bankruptcy or insolvency proceeding.
+
+7.6 Material Adverse Change: Any material adverse change in the business, operations, properties, or financial condition of the Borrower.
+
+ARTICLE 8: REMEDIES
+
+Upon occurrence of an Event of Default, the Lenders may:
+- Declare all outstanding Loans immediately due and payable
+- Terminate all commitments to extend further credit
+- Exercise any and all rights and remedies available at law or in equity
+
+ARTICLE 9: REPORTING OBLIGATIONS
+
+9.1 Quarterly Reporting: Within 45 days of each fiscal quarter end, the Borrower shall provide:
+    - Unaudited quarterly financial statements
+    - Compliance certificate with covenant calculations
+    - Management discussion and analysis
+
+9.2 Annual Reporting: Within 90 days of fiscal year end, the Borrower shall provide:
+    - Audited annual financial statements
+    - Annual compliance certificate
+    - Annual budget and projections for upcoming year
+
+9.3 Prompt Notification: The Borrower shall promptly notify the Agent of:
+    - Any Event of Default or potential Default
+    - Any litigation or governmental proceeding exceeding $500,000
+    - Any material adverse change in business or operations
+
+ARTICLE 10: MISCELLANEOUS
+
+10.1 Governing Law: This Agreement shall be governed by the laws of the State of New York.
+
+10.2 Amendments: This Agreement may be amended only by written instrument signed by the Borrower and Required Lenders.
+
+10.3 Notices: All notices shall be in writing and delivered to the addresses specified.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+BORROWER:
+TechCorp Industries, Inc.
+
+By: _______________________
+Name: John Smith
+Title: Chief Financial Officer
+
+AGENT:
+FirstBank Capital, LLC
+
+By: _______________________
+Name: Sarah Johnson  
+Title: Managing Director
+
+LENDERS:
+FirstBank Capital, LLC
+
+By: _______________________
+
+Regional Finance Partners, LP
+
+By: _______________________
