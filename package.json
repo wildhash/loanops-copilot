@@ -1,0 +1,60 @@
+{
+  "name": "loanops-copilot",
+  "version": "1.0.0",
+  "description": "An AI desktop copilot that helps loan agents and lenders track documents, monitor covenants, and prevent operational risk across syndicated loans.",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc && babel src/renderer.tsx --out-file dist/renderer.js && cp src/index.html dist/",
+    "start": "npm run build && electron .",
+    "dev": "npm run build && electron .",
+    "package": "npm run build && electron-builder",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "loan",
+    "syndicated loan",
+    "compliance",
+    "covenant",
+    "risk management"
+  ],
+  "build": {
+    "appId": "com.loanops.copilot",
+    "productName": "LoanOps Copilot",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.28.6",
+    "@babel/core": "^7.28.6",
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
+    "@types/node": "^25.0.7",
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.4.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "mammoth": "^1.11.0",
+    "pdf-parse": "^2.4.5",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  }
+}
