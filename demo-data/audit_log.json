@@ -1,0 +1,94 @@
+[
+  {
+    "id": "AUDIT-001",
+    "timestamp": "2024-10-01T09:15:00Z",
+    "type": "document_added",
+    "description": "Credit Agreement v1.0 uploaded to loan LOAN-2024-001",
+    "user": "System",
+    "details": {
+      "documentId": "DOC-001",
+      "documentName": "Credit_Agreement_2024-01-01.pdf"
+    }
+  },
+  {
+    "id": "AUDIT-002",
+    "timestamp": "2024-10-01T09:16:30Z",
+    "type": "terms_extracted",
+    "description": "Key terms extracted from Credit Agreement v1.0",
+    "user": "System",
+    "details": {
+      "documentId": "DOC-001",
+      "termsCount": 8
+    }
+  },
+  {
+    "id": "AUDIT-003",
+    "timestamp": "2024-10-01T09:17:00Z",
+    "type": "covenants_generated",
+    "description": "5 covenants identified and loaded",
+    "user": "System",
+    "details": {
+      "covenantsCount": 5
+    }
+  },
+  {
+    "id": "AUDIT-004",
+    "timestamp": "2024-10-01T10:30:00Z",
+    "type": "document_added",
+    "description": "First Amendment v2.0 uploaded to loan LOAN-2024-001",
+    "user": "System",
+    "details": {
+      "documentId": "DOC-002",
+      "documentName": "First_Amendment_2024-06-01.pdf"
+    }
+  },
+  {
+    "id": "AUDIT-005",
+    "timestamp": "2024-10-01T10:31:15Z",
+    "type": "terms_extracted",
+    "description": "Key terms extracted from First Amendment v2.0",
+    "user": "System",
+    "details": {
+      "documentId": "DOC-002",
+      "termsCount": 8
+    }
+  },
+  {
+    "id": "AUDIT-006",
+    "timestamp": "2024-10-01T10:32:00Z",
+    "type": "mismatch_flagged",
+    "description": "Margin rate mismatch detected between documents",
+    "user": "System",
+    "details": {
+      "issueId": "ISSUE-001",
+      "field": "margin",
+      "oldValue": "250 bps",
+      "newValue": "325 bps"
+    }
+  },
+  {
+    "id": "AUDIT-007",
+    "timestamp": "2024-10-05T14:20:00Z",
+    "type": "covenant_risk_detected",
+    "description": "Leverage ratio approaching covenant threshold",
+    "user": "System",
+    "details": {
+      "issueId": "ISSUE-003",
+      "covenantId": "COV-001",
+      "currentValue": 2.95,
+      "threshold": 3.00
+    }
+  },
+  {
+    "id": "AUDIT-008",
+    "timestamp": "2024-10-08T08:00:00Z",
+    "type": "obligation_generated",
+    "description": "Quarterly compliance certificate deadline approaching",
+    "user": "System",
+    "details": {
+      "issueId": "ISSUE-002",
+      "obligationId": "OBL-001",
+      "daysUntilDue": 7
+    }
+  }
+]
