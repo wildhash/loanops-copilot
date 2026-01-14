@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import '@/App.css';
 import axios from 'axios';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 import { 
   AlertTriangle, 
   CheckCircle, 
@@ -31,7 +34,11 @@ import {
   History,
   Zap,
   Target,
-  Briefcase
+  Briefcase,
+  Loader2,
+  ArrowRight,
+  ArrowDown,
+  X
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -117,6 +124,24 @@ const RiskBadge = ({ level }) => {
       <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
       {level?.charAt(0).toUpperCase() + level?.slice(1)}
     </div>
+  );
+};
+
+// Significance Badge for version comparison
+const SignificanceBadge = ({ level }) => {
+  const config = {
+    critical: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'Critical' },
+    high: { color: 'bg-amber-500/20 text-amber-400 border-amber-500/30', label: 'High' },
+    medium: { color: 'bg-blue-500/20 text-blue-400 border-blue-500/30', label: 'Medium' },
+    low: { color: 'bg-slate-500/20 text-slate-400 border-slate-500/30', label: 'Low' },
+  };
+
+  const { color, label } = config[level] || config.low;
+
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${color}`}>
+      {label}
+    </span>
   );
 };
 
@@ -236,6 +261,33 @@ const AuditEvent = ({ event, isLast }) => {
   );
 };
 
+// Version Comparison Difference Card
+const DifferenceCard = ({ diff }) => {
+  const bgClass = diff.significance === 'critical' ? 'diff-removed' : 
+                   diff.significance === 'high' ? 'diff-changed' : 
+                   diff.significance === 'medium' ? 'diff-changed' : '';
+  
+  return (
+    <div className={`p-4 rounded-lg border border-border ${bgClass}`}>
+      <div className="flex items-start justify-between mb-2">
+        <span className="font-medium text-sm capitalize">{diff.field.replace('_', ' ')}</span>
+        <SignificanceBadge level={diff.significance} />
+      </div>
+      <div className="grid grid-cols-2 gap-4 mt-3">
+        <div className="p-3 rounded bg-red-500/10 border border-red-500/20">
+          <p className="text-xs text-red-400 mb-1">Previous Value</p>
+          <p className="font-mono text-sm">{diff.old_value}</p>
+        </div>
+        <div className="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+          <p className="text-xs text-emerald-400 mb-1">New Value</p>
+          <p className="font-mono text-sm">{diff.new_value}</p>
+        </div>
+      </div>
+      <p className="text-sm text-muted-foreground mt-3">{diff.explanation}</p>
+    </div>
+  );
+};
+
 // Main App Component
 function App() {
   const [loading, setLoading] = useState(true);
@@ -248,6 +300,21 @@ function App() {
   const [documents, setDocuments] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [demoLoaded, setDemoLoaded] = useState(false);
+  
+  // Upload state
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const fileInputRef = useRef(null);
+  
+  // Comparison state
+  const [compareDialogOpen, setCompareDialogOpen] = useState(false);
+  const [selectedDocs, setSelectedDocs] = useState({ doc1: null, doc2: null });
+  const [comparing, setComparing] = useState(false);
+  const [comparisonResult, setComparisonResult] = useState(null);
+  
+  // Analysis state
+  const [analyzing, setAnalyzing] = useState(false);
 
   const loadDemoData = useCallback(async () => {
     try {
@@ -257,6 +324,7 @@ function App() {
       await fetchDashboard('demo-loan-001');
     } catch (error) {
       console.error('Error loading demo:', error);
+      toast.error('Failed to load demo data');
     } finally {
       setLoading(false);
     }
@@ -287,6 +355,78 @@ function App() {
       setLoading(true);
       await fetchDashboard(loan.id);
       setLoading(false);
+      toast.success('Data refreshed');
+    }
+  };
+
+  const handleFileUpload = async (event) => {
+    const files = event.target.files;
+    if (!files || files.length === 0 || !loan) return;
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await axios.post(`${API}/loans/${loan.id}/documents/upload`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(progress);
+          }
+        });
+      }
+
+      toast.success(`${files.length} document(s) uploaded successfully`);
+      setUploadDialogOpen(false);
+      await fetchDashboard(loan.id);
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload document');
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleAnalyzeDocument = async (documentId) => {
+    setAnalyzing(true);
+    try {
+      const response = await axios.post(`${API}/documents/${documentId}/analyze`);
+      toast.success(`Analysis complete! ${response.data.covenants_created} covenants extracted`);
+      await fetchDashboard(loan.id);
+    } catch (error) {
+      console.error('Analysis error:', error);
+      toast.error('Failed to analyze document');
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const handleCompareVersions = async () => {
+    if (!selectedDocs.doc1 || !selectedDocs.doc2 || !loan) return;
+    
+    setComparing(true);
+    try {
+      const response = await axios.post(`${API}/compare-versions`, {
+        loan_id: loan.id,
+        doc1_id: selectedDocs.doc1,
+        doc2_id: selectedDocs.doc2
+      });
+      setComparisonResult(response.data);
+      toast.success('Version comparison complete');
+    } catch (error) {
+      console.error('Comparison error:', error);
+      toast.error('Failed to compare versions');
+    } finally {
+      setComparing(false);
     }
   };
 
@@ -312,6 +452,7 @@ function App() {
             Open Demo Loan
           </Button>
         </div>
+        <Toaster richColors position="top-right" />
       </div>
     );
   }
@@ -330,6 +471,8 @@ function App() {
 
   return (
     <div className="App flex min-h-screen">
+      <Toaster richColors position="top-right" />
+      
       {/* Sidebar */}
       <aside className="sidebar flex flex-col">
         <div className="p-5 border-b border-border">
@@ -363,6 +506,7 @@ function App() {
               { id: 'obligations', icon: Calendar, label: 'Obligations' },
               { id: 'risks', icon: AlertTriangle, label: 'Risk Analysis' },
               { id: 'documents', icon: FileText, label: 'Documents' },
+              { id: 'compare', icon: GitCompare, label: 'Compare Versions' },
               { id: 'audit', icon: History, label: 'Audit Trail' },
             ].map(item => (
               <button
@@ -402,14 +546,62 @@ function App() {
               {activeTab === 'obligations' && 'Reporting requirements and deadlines'}
               {activeTab === 'risks' && 'Risk factors and recommendations'}
               {activeTab === 'documents' && 'Uploaded loan documents'}
+              {activeTab === 'compare' && 'Compare document versions and detect changes'}
               {activeTab === 'audit' && 'Complete activity history'}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
-              <Upload className="w-4 h-4 mr-2" />
-              Upload Document
-            </Button>
+            <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Upload className="w-4 h-4 mr-2" />
+                  Upload Document
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Upload Loan Document</DialogTitle>
+                  <DialogDescription>
+                    Upload PDF or Word documents for analysis. AI will extract covenants and key terms.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
+                  <div 
+                    className="upload-area p-8 text-center cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {uploading ? (
+                      <>
+                        <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
+                        <p className="font-medium mb-2">Uploading...</p>
+                        <Progress value={uploadProgress} className="w-full" />
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
+                        <p className="font-medium mb-2">Click to select files</p>
+                        <p className="text-sm text-muted-foreground">
+                          Supports PDF, DOC, DOCX
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </header>
 
@@ -703,7 +895,10 @@ function App() {
           {activeTab === 'documents' && (
             <div className="space-y-4 animate-fadeIn">
               {/* Upload Area */}
-              <div className="upload-area p-8 text-center">
+              <div 
+                className="upload-area p-8 text-center cursor-pointer"
+                onClick={() => setUploadDialogOpen(true)}
+              >
                 <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">Upload Loan Documents</h3>
                 <p className="text-sm text-muted-foreground mb-4">
@@ -755,10 +950,23 @@ function App() {
                           </td>
                           <td>
                             <div className="flex gap-2">
-                              <Button variant="ghost" size="sm">
-                                <FileCheck className="w-4 h-4 mr-1" /> Analyze
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => handleAnalyzeDocument(doc.id)}
+                                disabled={analyzing}
+                              >
+                                {analyzing ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <FileCheck className="w-4 h-4 mr-1" />}
+                                Analyze
                               </Button>
-                              <Button variant="ghost" size="sm">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedDocs({ ...selectedDocs, doc1: doc.id });
+                                  setActiveTab('compare');
+                                }}
+                              >
                                 <GitCompare className="w-4 h-4 mr-1" /> Compare
                               </Button>
                             </div>
@@ -769,6 +977,138 @@ function App() {
                   </table>
                 </CardContent>
               </Card>
+            </div>
+          )}
+
+          {/* Compare Versions Tab */}
+          {activeTab === 'compare' && (
+            <div className="space-y-6 animate-fadeIn">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Version Comparison</CardTitle>
+                  <CardDescription>Select two document versions to compare and detect inconsistencies</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Document 1 Selection */}
+                    <div>
+                      <p className="text-sm font-medium mb-3 flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center">1</span>
+                        First Document (Baseline)
+                      </p>
+                      <div className="space-y-2">
+                        {documents.map(doc => (
+                          <div
+                            key={doc.id}
+                            onClick={() => setSelectedDocs({ ...selectedDocs, doc1: doc.id })}
+                            className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                              selectedDocs.doc1 === doc.id 
+                                ? 'border-blue-500 bg-blue-500/10' 
+                                : 'border-border hover:border-blue-500/50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <FileText className="w-4 h-4 text-muted-foreground" />
+                              <div className="flex-1">
+                                <p className="font-medium text-sm">{doc.filename}</p>
+                                <p className="text-xs text-muted-foreground">Version {doc.version}</p>
+                              </div>
+                              {selectedDocs.doc1 === doc.id && (
+                                <CheckCircle className="w-4 h-4 text-blue-500" />
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Document 2 Selection */}
+                    <div>
+                      <p className="text-sm font-medium mb-3 flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs flex items-center justify-center">2</span>
+                        Second Document (Comparison)
+                      </p>
+                      <div className="space-y-2">
+                        {documents.map(doc => (
+                          <div
+                            key={doc.id}
+                            onClick={() => setSelectedDocs({ ...selectedDocs, doc2: doc.id })}
+                            className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                              selectedDocs.doc2 === doc.id 
+                                ? 'border-emerald-500 bg-emerald-500/10' 
+                                : 'border-border hover:border-emerald-500/50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <FileText className="w-4 h-4 text-muted-foreground" />
+                              <div className="flex-1">
+                                <p className="font-medium text-sm">{doc.filename}</p>
+                                <p className="text-xs text-muted-foreground">Version {doc.version}</p>
+                              </div>
+                              {selectedDocs.doc2 === doc.id && (
+                                <CheckCircle className="w-4 h-4 text-emerald-500" />
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex justify-center">
+                    <Button 
+                      onClick={handleCompareVersions}
+                      disabled={!selectedDocs.doc1 || !selectedDocs.doc2 || comparing}
+                      className="gradient-primary text-white"
+                    >
+                      {comparing ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Comparing...
+                        </>
+                      ) : (
+                        <>
+                          <GitCompare className="w-4 h-4 mr-2" />
+                          Compare Selected Documents
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Comparison Results */}
+              {comparisonResult && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Comparison Results</CardTitle>
+                    <CardDescription>
+                      {comparisonResult.differences.length} differences detected between versions
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-center gap-4 mb-6 p-4 bg-muted/30 rounded-lg">
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground">Baseline</p>
+                        <p className="font-medium">{comparisonResult.doc1?.filename}</p>
+                        <Badge variant="outline">v{comparisonResult.doc1?.version}</Badge>
+                      </div>
+                      <ArrowRight className="w-6 h-6 text-muted-foreground" />
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground">Comparison</p>
+                        <p className="font-medium">{comparisonResult.doc2?.filename}</p>
+                        <Badge variant="outline">v{comparisonResult.doc2?.version}</Badge>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {comparisonResult.differences.map((diff, index) => (
+                        <DifferenceCard key={index} diff={diff} />
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
