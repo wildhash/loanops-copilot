@@ -161,3 +161,32 @@ ipcMain.handle('load-demo-data', async () => {
     return { success: false, error: (error as Error).message };
   }
 });
+
+ipcMain.handle('save-summary', async (_event, summaryData: { json: string; markdown: string }) => {
+  try {
+    const result = await dialog.showSaveDialog({
+      title: 'Save Loan Summary',
+      defaultPath: `loan-summary-${Date.now()}`,
+      properties: ['createDirectory']
+    });
+
+    if (result.canceled || !result.filePath) {
+      return { success: false, error: 'User canceled' };
+    }
+
+    const basePath = result.filePath;
+    const jsonPath = `${basePath}.json`;
+    const markdownPath = `${basePath}.md`;
+
+    fs.writeFileSync(jsonPath, summaryData.json);
+    fs.writeFileSync(markdownPath, summaryData.markdown);
+
+    return {
+      success: true,
+      jsonPath,
+      markdownPath
+    };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+});
