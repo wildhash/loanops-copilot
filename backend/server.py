@@ -900,7 +900,7 @@ async def analyze_risks(loan_id: str):
                 title=f"{cov['name']} At Risk",
                 description=f"Covenant {cov['name']} is approaching breach threshold",
                 impact="Potential breach could trigger default provisions",
-                recommendation=f"Monitor closely and prepare mitigation strategy",
+                recommendation="Monitor closely and prepare mitigation strategy",
                 score=70
             )
             doc = risk.model_dump()
