@@ -7,6 +7,12 @@ import { VersionComparator } from './services/VersionComparator';
 import { RiskAnalyzer, LoanRiskData } from './services/RiskAnalyzer';
 import { DemoDataLoader } from './demo/DemoDataLoader';
 
+// Handle GPU issues in containerized/headless environments
+app.commandLine.appendSwitch('no-sandbox');
+app.commandLine.appendSwitch('disable-gpu');
+app.commandLine.appendSwitch('disable-software-rasterizer');
+app.disableHardwareAcceleration();
+
 let mainWindow: BrowserWindow | null = null;
 
 function createWindow(): void {

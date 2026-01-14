@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "An AI desktop copilot that helps loan agents and lenders track documents, monitor covenants, and prevent operational risk across syndicated loans.",
   "main": "dist/main.js",
-  "type": "module",
   "scripts": {
     "build": "tsc && babel src/renderer.tsx --out-file dist/renderer.js && cp src/index.html dist/",
     "start": "npm run build && electron .",
+    "start:debug": "NODE_ENV=development npm run start",
     "dev": "npm run build && electron .",
+    "dev:web": "npm run build && node web-server.js",
     "package": "npm run build && electron-builder",
     "test": "vitest run",
     "test:watch": "vitest",
