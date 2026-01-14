@@ -909,7 +909,6 @@ async def analyze_risks(loan_id: str):
             risks_created.append(doc)
     
     # Analyze obligations
-    today = datetime.now(timezone.utc).date()
     for obl in obligations:
         if obl.get('status') == 'overdue':
             risk = RiskFactor(
