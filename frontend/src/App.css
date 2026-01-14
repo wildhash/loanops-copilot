@@ -1,34 +1,156 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* App-specific styles */
+.App {
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: hsl(222 47% 11%);
+  border-right: 1px solid hsl(var(--border));
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Main content area */
+.main-content {
+  flex: 1;
+  min-height: 100vh;
+  background: linear-gradient(180deg, hsl(222 47% 11%) 0%, hsl(222 47% 8%) 100%);
 }
 
-.App-link {
-    color: #61dafb;
+/* Header */
+.app-header {
+  background: hsl(222 47% 11%);
+  border-bottom: 1px solid hsl(var(--border));
+  backdrop-filter: blur(10px);
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* Metric cards */
+.metric-card {
+  background: linear-gradient(135deg, hsl(217 33% 17%) 0%, hsl(217 33% 14%) 100%);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  border-color: hsl(var(--primary) / 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Covenant cards */
+.covenant-card {
+  background: hsl(217 33% 15%);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+}
+
+.covenant-card:hover {
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+.covenant-card.at-risk {
+  border-left: 3px solid hsl(var(--warning));
+}
+
+.covenant-card.breached {
+  border-left: 3px solid hsl(var(--destructive));
+}
+
+.covenant-card.compliant {
+  border-left: 3px solid hsl(var(--success));
+}
+
+/* Risk indicator */
+.risk-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.risk-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.risk-dot.critical { background: hsl(var(--destructive)); }
+.risk-dot.high { background: hsl(var(--warning)); }
+.risk-dot.medium { background: hsl(var(--info)); }
+.risk-dot.low { background: hsl(var(--success)); }
+
+/* Timeline */
+.timeline-item {
+  position: relative;
+  padding-left: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 0.45rem;
+  top: 1.5rem;
+  bottom: 0;
+  width: 1px;
+  background: hsl(var(--border));
+}
+
+.timeline-item:last-child::before {
+  display: none;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  border: 2px solid hsl(var(--background));
+}
+
+/* Loading states */
+.skeleton {
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 50%, hsl(var(--muted)) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* File upload area */
+.upload-area {
+  border: 2px dashed hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(217 33% 12%);
+  transition: all 0.2s ease;
+}
+
+.upload-area:hover,
+.upload-area.drag-over {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.1);
+}
+
+/* Comparison diff */
+.diff-added {
+  background: hsl(142 71% 45% / 0.2);
+  border-left: 3px solid hsl(var(--success));
+}
+
+.diff-removed {
+  background: hsl(0 84% 60% / 0.2);
+  border-left: 3px solid hsl(var(--destructive));
+}
+
+.diff-changed {
+  background: hsl(38 92% 50% / 0.2);
+  border-left: 3px solid hsl(var(--warning));
 }
