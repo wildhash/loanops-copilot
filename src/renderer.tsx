@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { LoanDocument, Covenant, RiskAnalysis, VersionDifference, LoanHealth } from './types';
-import { DemoIssue, DemoObligation, DemoLoan, AuditEvent } from './demo/DemoDataLoader';
+import { DemoIssue, DemoObligation, DemoLoan, AuditEvent, DemoCovenant } from './demo/DemoDataLoader';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -50,16 +50,7 @@ const App: React.FC = () => {
         setDemoMode(true);
         
         // Convert demo covenants to app covenants format
-        const demoCovenants: Covenant[] = data.covenants.map((c: {
-          id: string;
-          type: 'financial' | 'negative' | 'affirmative' | 'operational';
-          description: string;
-          threshold: string;
-          frequency: string;
-          status: 'compliant' | 'at-risk' | 'breach-likely';
-          plainEnglish: string;
-          source: string;
-        }) => ({
+        const demoCovenants: Covenant[] = data.covenants.map((c: DemoCovenant) => ({
           id: c.id,
           type: c.type,
           description: c.description,
@@ -108,12 +99,7 @@ const App: React.FC = () => {
         });
         
         // Generate risk analysis from demo issues
-        const riskFactors = data.issues.map((issue: {
-          type: string;
-          title: string;
-          severity: 'low' | 'medium' | 'high' | 'critical';
-          whyItMatters: string;
-        }) => ({
+        const riskFactors = data.issues.map((issue: DemoIssue) => ({
           category: issue.type,
           description: issue.title,
           severity: issue.severity,
@@ -125,7 +111,7 @@ const App: React.FC = () => {
                        data.healthScore.status === 'warning' ? 'high' : 'low',
           riskScore: 100 - data.healthScore.score,
           riskFactors: riskFactors,
-          recommendations: data.issues.flatMap((issue: { nextSteps?: string[] }) => issue.nextSteps || [])
+          recommendations: data.issues.flatMap((issue: DemoIssue) => issue.nextSteps)
         });
         
         setActiveTab('dashboard');
@@ -171,7 +157,7 @@ const App: React.FC = () => {
 
 ## Health Score: ${loanHealth?.healthScore}/100
 **Status:** ${loanHealth?.overallHealth}
-**Explanation:** ${covenants.filter(c => c.status === 'at-risk' || c.status === 'breached').length} covenants at risk
+**Explanation:** ${covenants.filter(c => c.status === 'at-risk').length} covenants at risk
 
 ## Key Metrics
 - Document Compliance: ${loanHealth?.metrics.documentCompliance}%
