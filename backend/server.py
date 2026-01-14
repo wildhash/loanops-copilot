@@ -613,8 +613,8 @@ async def delete_loan(loan_id: str):
 @api_router.post("/demo/load")
 async def load_demo_data():
     """Load demo data for demonstration"""
-    # Clear existing demo data
-    await db.loans.delete_one({"id": "demo-loan-001"})
+    # Clear ALL existing demo data thoroughly
+    await db.loans.delete_many({"id": "demo-loan-001"})
     await db.covenants.delete_many({"loan_id": "demo-loan-001"})
     await db.obligations.delete_many({"loan_id": "demo-loan-001"})
     await db.documents.delete_many({"loan_id": "demo-loan-001"})
