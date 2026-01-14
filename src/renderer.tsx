@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { LoanDocument, Covenant, RiskAnalysis, VersionDifference, LoanHealth } from './types';
+import { DemoIssue, DemoObligation, DemoLoan, AuditEvent, DemoCovenant } from './demo/DemoDataLoader';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -15,6 +16,11 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [compareMode, setCompareMode] = useState(false);
   const [docToCompare, setDocToCompare] = useState<LoanDocument | null>(null);
+  const [demoMode, setDemoMode] = useState(false);
+  const [demoIssues, setDemoIssues] = useState<DemoIssue[]>([]);
+  const [demoObligations, setDemoObligations] = useState<DemoObligation[]>([]);
+  const [demoAuditLog, setDemoAuditLog] = useState<AuditEvent[]>([]);
+  const [demoLoan, setDemoLoan] = useState<DemoLoan | null>(null);
 
   useEffect(() => {
     // Load initial loan health data
@@ -29,6 +35,190 @@ const App: React.FC = () => {
       }
     } catch (error) {
       console.error('Error loading loan health:', error);
+    }
+  };
+
+  const handleLoadDemoData = async () => {
+    setLoading(true);
+    try {
+      const result = await ipcRenderer.invoke('load-demo-data');
+      
+      if (result.success) {
+        const { data } = result;
+        
+        // Set demo mode flag
+        setDemoMode(true);
+        
+        // Convert demo covenants to app covenants format
+        const demoCovenants: Covenant[] = data.covenants.map((c: DemoCovenant) => ({
+          id: c.id,
+          type: c.type,
+          description: c.description,
+          threshold: c.threshold,
+          frequency: c.frequency,
+          status: c.status,
+          riskLevel: c.status === 'breach-likely' ? 'critical' : c.status === 'at-risk' ? 'high' : 'low',
+          explanation: c.plainEnglish,
+          location: c.source
+        }));
+        
+        setCovenants(demoCovenants);
+        setDemoIssues(data.issues);
+        setDemoObligations(data.obligations);
+        setDemoAuditLog(data.auditLog);
+        setDemoLoan(data.loan);
+        
+        // Create a mock document for demo
+        const demoDoc: LoanDocument = {
+          id: 'DEMO-DOC-001',
+          name: 'Demo Loan Agreement.pdf',
+          path: '/demo/loan_agreement.pdf',
+          size: 1024000,
+          uploadDate: new Date(),
+          type: 'pdf',
+          version: 'Demo v1.0'
+        };
+        
+        setDocuments([demoDoc]);
+        setSelectedDocument(demoDoc);
+        
+        // Set health score from demo data
+        setLoanHealth({
+          loanId: data.loan.loanId,
+          overallHealth: data.healthScore.status,
+          healthScore: data.healthScore.score,
+          metrics: {
+            documentCompliance: 90,
+            covenantAdherence: 85,
+            reportingTimeliness: 80,
+            riskLevel: data.healthScore.status === 'critical' ? 'critical' : 
+                       data.healthScore.status === 'warning' ? 'medium' : 'low'
+          },
+          alerts: [],
+          lastUpdated: new Date()
+        });
+        
+        // Generate risk analysis from demo issues
+        const riskFactors = data.issues.map((issue: DemoIssue) => ({
+          category: issue.type,
+          description: issue.title,
+          severity: issue.severity,
+          impact: issue.whyItMatters
+        }));
+        
+        setRiskAnalysis({
+          overallRisk: data.healthScore.status === 'critical' ? 'critical' : 
+                       data.healthScore.status === 'warning' ? 'high' : 'low',
+          riskScore: 100 - data.healthScore.score,
+          riskFactors: riskFactors,
+          recommendations: data.issues.flatMap((issue: DemoIssue) => issue.nextSteps)
+        });
+        
+        setActiveTab('dashboard');
+      } else {
+        alert('Error loading demo data: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error loading demo data:', error);
+      alert('Error loading demo data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGenerateSummary = async () => {
+    if (!demoMode || !demoLoan) {
+      alert('Summary generation is currently only available in Demo Mode');
+      return;
+    }
+
+    try {
+      // Generate JSON summary
+      const jsonSummary = {
+        loan: demoLoan,
+        healthScore: loanHealth,
+        covenants: covenants,
+        issues: demoIssues,
+        obligations: demoObligations,
+        auditLog: demoAuditLog,
+        generatedAt: new Date().toISOString()
+      };
+
+      // Generate Markdown summary
+      const markdownSummary = `# Loan Summary Report
+**Generated:** ${new Date().toLocaleString()}
+
+## Loan Overview
+- **Loan ID:** ${demoLoan.loanId}
+- **Loan Name:** ${demoLoan.loanName}
+- **Borrower:** ${demoLoan.borrower.name}
+- **Facility Amount:** ${demoLoan.facility.currency} ${demoLoan.facility.amount.toLocaleString()}
+- **Status:** ${demoLoan.status}
+
+## Health Score: ${loanHealth?.healthScore}/100
+**Status:** ${loanHealth?.overallHealth}
+**Explanation:** ${covenants.filter(c => c.status === 'at-risk').length} covenants at risk
+
+## Key Metrics
+- Document Compliance: ${loanHealth?.metrics.documentCompliance}%
+- Covenant Adherence: ${loanHealth?.metrics.covenantAdherence}%
+- Reporting Timeliness: ${loanHealth?.metrics.reportingTimeliness}%
+
+## Covenants (${covenants.length} total)
+${covenants.map(c => `
+### ${c.id} - ${c.type.toUpperCase()}
+- **Description:** ${c.description}
+- **Status:** ${c.status}
+- **Risk Level:** ${c.riskLevel}
+- **Threshold:** ${c.threshold || 'N/A'}
+- **Explanation:** ${c.explanation}
+`).join('\n')}
+
+## Open Issues (${demoIssues.filter(i => i.status === 'open').length})
+${demoIssues.filter(i => i.status === 'open').map(issue => `
+### ${issue.title}
+- **Severity:** ${issue.severity.toUpperCase()}
+- **Type:** ${issue.type}
+- **Why It Matters:** ${issue.whyItMatters}
+- **Next Steps:**
+${issue.nextSteps.map(step => `  - ${step}`).join('\n')}
+- **Who to Notify:** ${issue.whoToNotify.join(', ')}
+`).join('\n')}
+
+## Upcoming Obligations (${demoObligations.filter(o => o.status === 'due-soon' || o.status === 'upcoming').length})
+${demoObligations
+  .filter(o => o.status === 'due-soon' || o.status === 'upcoming')
+  .map(obl => `
+### ${obl.title}
+- **Due Date:** ${new Date(obl.dueDate).toLocaleDateString()}
+- **Days Until Due:** ${obl.daysUntilDue}
+- **Status:** ${obl.status}
+- **Frequency:** ${obl.frequency}
+`).join('\n')}
+
+## Audit Trail (${demoAuditLog.length} events)
+${demoAuditLog.slice(0, 10).map(log => `
+- **[${new Date(log.timestamp).toLocaleString()}]** ${log.description}
+`).join('\n')}
+
+---
+*This summary was automatically generated by LoanOps Copilot*
+`;
+
+      // Export both files
+      const result = await ipcRenderer.invoke('save-summary', {
+        json: JSON.stringify(jsonSummary, null, 2),
+        markdown: markdownSummary
+      });
+
+      if (result.success) {
+        alert(`Summary exported successfully!\n\nJSON: ${result.jsonPath}\nMarkdown: ${result.markdownPath}`);
+      } else {
+        alert('Error exporting summary: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error generating summary:', error);
+      alert('Error generating summary. Please try again.');
     }
   };
 
@@ -139,11 +329,16 @@ const App: React.FC = () => {
       return (
         <div className="empty-state">
           <div className="empty-state-icon">📄</div>
-          <h3>No Documents Uploaded</h3>
-          <p>Upload loan documents to start tracking covenants, obligations, and risks</p>
-          <button className="btn btn-primary" onClick={handleUploadDocuments}>
-            📤 Upload Documents
-          </button>
+          <h3>Welcome to LoanOps Copilot</h3>
+          <p>Get started by loading a demo loan or uploading your own documents</p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '20px' }}>
+            <button className="btn btn-primary" onClick={handleLoadDemoData}>
+              🎯 Open Demo Loan
+            </button>
+            <button className="btn btn-secondary" onClick={handleUploadDocuments}>
+              📤 Upload Documents
+            </button>
+          </div>
         </div>
       );
     }
@@ -220,6 +415,81 @@ const App: React.FC = () => {
             >
               View All Covenants
             </button>
+          </div>
+        )}
+
+        {demoMode && demoIssues.length > 0 && (
+          <div className="card">
+            <h3>🚨 Top Issues</h3>
+            <p style={{ color: '#666', fontSize: '13px', marginBottom: '16px' }}>
+              Detected issues requiring attention, ranked by severity
+            </p>
+            {demoIssues.map(issue => (
+              <div key={issue.id} style={{ 
+                padding: '16px', 
+                background: '#f9f9f9', 
+                borderRadius: '8px', 
+                marginBottom: '12px',
+                borderLeft: `4px solid ${
+                  issue.severity === 'critical' ? '#dc3545' :
+                  issue.severity === 'high' ? '#f5576c' :
+                  issue.severity === 'medium' ? '#ffa500' : '#ffc107'
+                }`
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <div style={{ fontWeight: 600, fontSize: '14px' }}>{issue.title}</div>
+                  <span style={{ 
+                    padding: '2px 8px', 
+                    borderRadius: '4px', 
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    background: issue.severity === 'critical' ? '#dc3545' :
+                               issue.severity === 'high' ? '#f5576c' :
+                               issue.severity === 'medium' ? '#ffa500' : '#ffc107',
+                    color: 'white'
+                  }}>
+                    {issue.severity.toUpperCase()}
+                  </span>
+                </div>
+                <div style={{ fontSize: '13px', color: '#666', marginBottom: '8px' }}>
+                  {issue.whyItMatters}
+                </div>
+                <div style={{ fontSize: '12px', color: '#888', marginTop: '8px' }}>
+                  <strong>Recommended Action:</strong> {issue.nextSteps[0]}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {demoMode && demoObligations.length > 0 && (
+          <div className="card">
+            <h3>📅 Upcoming Obligations</h3>
+            <p style={{ color: '#666', fontSize: '13px', marginBottom: '16px' }}>
+              {demoObligations.filter((o) => o.status === 'due-soon' || o.status === 'upcoming').length} obligations due in the next 30 days
+            </p>
+            {demoObligations
+              .filter((o) => o.status === 'due-soon' || o.status === 'upcoming')
+              .slice(0, 3)
+              .map((obligation) => (
+              <div key={obligation.id} style={{ 
+                padding: '12px', 
+                background: '#f0f9ff', 
+                borderRadius: '6px', 
+                marginBottom: '10px'
+              }}>
+                <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '6px' }}>
+                  {obligation.title}
+                </div>
+                <div style={{ fontSize: '12px', color: '#666' }}>
+                  <strong>Due:</strong> {new Date(obligation.dueDate).toLocaleDateString()} 
+                  ({obligation.daysUntilDue} days remaining)
+                </div>
+                <div style={{ fontSize: '12px', color: '#666' }}>
+                  <strong>Frequency:</strong> {obligation.frequency}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -420,6 +690,15 @@ const App: React.FC = () => {
           LoanOps Copilot
         </h1>
         <div className="header-actions">
+          {demoMode && (
+            <button 
+              className="btn btn-primary"
+              onClick={handleGenerateSummary}
+              disabled={loading}
+            >
+              📄 Generate Summary
+            </button>
+          )}
           <button 
             className="btn btn-primary" 
             onClick={handleUploadDocuments}

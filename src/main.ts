@@ -5,6 +5,7 @@ import { DocumentParser } from './services/DocumentParser';
 import { CovenantExtractor } from './services/CovenantExtractor';
 import { VersionComparator } from './services/VersionComparator';
 import { RiskAnalyzer, LoanRiskData } from './services/RiskAnalyzer';
+import { DemoDataLoader } from './demo/DemoDataLoader';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -131,6 +132,60 @@ ipcMain.handle('get-loan-health', async (_event, _loanId: string) => {
       }
     };
     return { success: true, health };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+ipcMain.handle('load-demo-data', async () => {
+  try {
+    const loan = DemoDataLoader.getLoan();
+    const covenants = DemoDataLoader.getCovenants();
+    const obligations = DemoDataLoader.getObligations();
+    const issues = DemoDataLoader.getIssues();
+    const auditLog = DemoDataLoader.getAuditLog();
+    const healthScore = DemoDataLoader.getHealthScore();
+    
+    return {
+      success: true,
+      data: {
+        loan,
+        covenants,
+        obligations,
+        issues,
+        auditLog,
+        healthScore
+      }
+    };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+});
+
+ipcMain.handle('save-summary', async (_event, summaryData: { json: string; markdown: string }) => {
+  try {
+    const result = await dialog.showSaveDialog({
+      title: 'Save Loan Summary',
+      defaultPath: `loan-summary-${Date.now()}`,
+      properties: ['createDirectory']
+    });
+
+    if (result.canceled || !result.filePath) {
+      return { success: false, error: 'User canceled' };
+    }
+
+    const basePath = result.filePath;
+    const jsonPath = `${basePath}.json`;
+    const markdownPath = `${basePath}.md`;
+
+    fs.writeFileSync(jsonPath, summaryData.json);
+    fs.writeFileSync(markdownPath, summaryData.markdown);
+
+    return {
+      success: true,
+      jsonPath,
+      markdownPath
+    };
   } catch (error) {
     return { success: false, error: (error as Error).message };
   }
