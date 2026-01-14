@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { LoanDocument, Covenant, RiskAnalysis, VersionDifference, LoanHealth } from './types';
+import { DemoIssue, DemoObligation } from './demo/DemoDataLoader';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -15,6 +16,9 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [compareMode, setCompareMode] = useState(false);
   const [docToCompare, setDocToCompare] = useState<LoanDocument | null>(null);
+  const [demoMode, setDemoMode] = useState(false);
+  const [demoIssues, setDemoIssues] = useState<DemoIssue[]>([]);
+  const [demoObligations, setDemoObligations] = useState<DemoObligation[]>([]);
 
   useEffect(() => {
     // Load initial loan health data
@@ -29,6 +33,106 @@ const App: React.FC = () => {
       }
     } catch (error) {
       console.error('Error loading loan health:', error);
+    }
+  };
+
+  const handleLoadDemoData = async () => {
+    setLoading(true);
+    try {
+      const result = await ipcRenderer.invoke('load-demo-data');
+      
+      if (result.success) {
+        const { data } = result;
+        
+        // Set demo mode flag
+        setDemoMode(true);
+        
+        // Convert demo covenants to app covenants format
+        const demoCovenants: Covenant[] = data.covenants.map((c: {
+          id: string;
+          type: 'financial' | 'negative' | 'affirmative' | 'operational';
+          description: string;
+          threshold: string;
+          frequency: string;
+          status: 'compliant' | 'at-risk' | 'breach-likely';
+          plainEnglish: string;
+          source: string;
+        }) => ({
+          id: c.id,
+          type: c.type,
+          description: c.description,
+          threshold: c.threshold,
+          frequency: c.frequency,
+          status: c.status,
+          riskLevel: c.status === 'breach-likely' ? 'critical' : c.status === 'at-risk' ? 'high' : 'low',
+          explanation: c.plainEnglish,
+          location: c.source
+        }));
+        
+        setCovenants(demoCovenants);
+        setDemoIssues(data.issues);
+        setDemoObligations(data.obligations);
+        
+        // Create a mock document for demo
+        const demoDoc: LoanDocument = {
+          id: 'DEMO-DOC-001',
+          name: 'Demo Loan Agreement.pdf',
+          path: '/demo/loan_agreement.pdf',
+          size: 1024000,
+          uploadDate: new Date(),
+          type: 'pdf',
+          version: 'Demo v1.0'
+        };
+        
+        setDocuments([demoDoc]);
+        setSelectedDocument(demoDoc);
+        
+        // Set health score from demo data
+        setLoanHealth({
+          loanId: data.loan.loanId,
+          overallHealth: data.healthScore.status,
+          healthScore: data.healthScore.score,
+          metrics: {
+            documentCompliance: 90,
+            covenantAdherence: 85,
+            reportingTimeliness: 80,
+            riskLevel: data.healthScore.status === 'critical' ? 'critical' : 
+                       data.healthScore.status === 'warning' ? 'medium' : 'low'
+          },
+          alerts: [],
+          lastUpdated: new Date()
+        });
+        
+        // Generate risk analysis from demo issues
+        const riskFactors = data.issues.map((issue: {
+          type: string;
+          title: string;
+          severity: 'low' | 'medium' | 'high' | 'critical';
+          whyItMatters: string;
+        }) => ({
+          category: issue.type,
+          description: issue.title,
+          severity: issue.severity,
+          impact: issue.whyItMatters
+        }));
+        
+        setRiskAnalysis({
+          overallRisk: data.healthScore.status === 'critical' ? 'critical' : 
+                       data.healthScore.status === 'warning' ? 'high' : 'low',
+          riskScore: 100 - data.healthScore.score,
+          riskFactors: riskFactors,
+          recommendations: data.issues.flatMap((issue: { nextSteps?: string[] }) => issue.nextSteps || [])
+        });
+        
+        setActiveTab('dashboard');
+      } else {
+        alert('Error loading demo data: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error loading demo data:', error);
+      alert('Error loading demo data. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,11 +243,16 @@ const App: React.FC = () => {
       return (
         <div className="empty-state">
           <div className="empty-state-icon">📄</div>
-          <h3>No Documents Uploaded</h3>
-          <p>Upload loan documents to start tracking covenants, obligations, and risks</p>
-          <button className="btn btn-primary" onClick={handleUploadDocuments}>
-            📤 Upload Documents
-          </button>
+          <h3>Welcome to LoanOps Copilot</h3>
+          <p>Get started by loading a demo loan or uploading your own documents</p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '20px' }}>
+            <button className="btn btn-primary" onClick={handleLoadDemoData}>
+              🎯 Open Demo Loan
+            </button>
+            <button className="btn btn-secondary" onClick={handleUploadDocuments}>
+              📤 Upload Documents
+            </button>
+          </div>
         </div>
       );
     }
@@ -220,6 +329,81 @@ const App: React.FC = () => {
             >
               View All Covenants
             </button>
+          </div>
+        )}
+
+        {demoMode && demoIssues.length > 0 && (
+          <div className="card">
+            <h3>🚨 Top Issues</h3>
+            <p style={{ color: '#666', fontSize: '13px', marginBottom: '16px' }}>
+              Detected issues requiring attention, ranked by severity
+            </p>
+            {demoIssues.map(issue => (
+              <div key={issue.id} style={{ 
+                padding: '16px', 
+                background: '#f9f9f9', 
+                borderRadius: '8px', 
+                marginBottom: '12px',
+                borderLeft: `4px solid ${
+                  issue.severity === 'critical' ? '#dc3545' :
+                  issue.severity === 'high' ? '#f5576c' :
+                  issue.severity === 'medium' ? '#ffa500' : '#ffc107'
+                }`
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <div style={{ fontWeight: 600, fontSize: '14px' }}>{issue.title}</div>
+                  <span style={{ 
+                    padding: '2px 8px', 
+                    borderRadius: '4px', 
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    background: issue.severity === 'critical' ? '#dc3545' :
+                               issue.severity === 'high' ? '#f5576c' :
+                               issue.severity === 'medium' ? '#ffa500' : '#ffc107',
+                    color: 'white'
+                  }}>
+                    {issue.severity.toUpperCase()}
+                  </span>
+                </div>
+                <div style={{ fontSize: '13px', color: '#666', marginBottom: '8px' }}>
+                  {issue.whyItMatters}
+                </div>
+                <div style={{ fontSize: '12px', color: '#888', marginTop: '8px' }}>
+                  <strong>Recommended Action:</strong> {issue.nextSteps[0]}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {demoMode && demoObligations.length > 0 && (
+          <div className="card">
+            <h3>📅 Upcoming Obligations</h3>
+            <p style={{ color: '#666', fontSize: '13px', marginBottom: '16px' }}>
+              {demoObligations.filter((o) => o.status === 'due-soon' || o.status === 'upcoming').length} obligations due in the next 30 days
+            </p>
+            {demoObligations
+              .filter((o) => o.status === 'due-soon' || o.status === 'upcoming')
+              .slice(0, 3)
+              .map((obligation) => (
+              <div key={obligation.id} style={{ 
+                padding: '12px', 
+                background: '#f0f9ff', 
+                borderRadius: '6px', 
+                marginBottom: '10px'
+              }}>
+                <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '6px' }}>
+                  {obligation.title}
+                </div>
+                <div style={{ fontSize: '12px', color: '#666' }}>
+                  <strong>Due:</strong> {new Date(obligation.dueDate).toLocaleDateString()} 
+                  ({obligation.daysUntilDue} days remaining)
+                </div>
+                <div style={{ fontSize: '12px', color: '#666' }}>
+                  <strong>Frequency:</strong> {obligation.frequency}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
